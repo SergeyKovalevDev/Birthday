@@ -1,13 +1,16 @@
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
     private final DateTimeFormatter datePattern = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private final Path filePath = Path.of("report.txt");
 
     public static void main(String[] args) {
         String[][] stringArray = {
@@ -27,13 +30,12 @@ public class Main {
 
     private void taskStarter(String[][] stringArray) {
         Map<String, LocalDate> map = getMap(stringArray);
-
-        Stream.of(map)
-                .forEach(System.out::println);
+        writeStringToFile(mapToString(map));
     }
 
     private Map<String, LocalDate> getMap(String[][] stringArray) {
-        return Stream.of(stringArray)
+        return Stream.
+                of(stringArray)
                 .filter(strings -> strings.length >= 2)
                 .map(strings -> {
                     if (strings.length >= 3) return new String[]{strings[0], strings[1], strings[2]};
@@ -53,6 +55,22 @@ public class Main {
             return true;
         } catch (NumberFormatException e) {
             return false;
+        }
+    }
+
+    private String mapToString(Map<String, LocalDate> map) {
+        return map
+                .keySet()
+                .stream()
+                .map(key -> key + ", дата рождения " + map.get(key).format(datePattern))
+                .collect(Collectors.joining("\n"));
+    }
+
+    private void writeStringToFile(String str) {
+        try {
+            Files.writeString(filePath, str, Charset.defaultCharset());
+        } catch (IOException e) {
+            System.out.println("Error writing to file");
         }
     }
 }
