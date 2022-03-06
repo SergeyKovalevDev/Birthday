@@ -34,8 +34,8 @@ public class Main {
     }
 
     private Map<String, LocalDate> getMap(String[][] stringArray) {
-        return Stream.
-                of(stringArray)
+        return Stream
+                .of(stringArray)
                 .filter(strings -> strings.length >= 2)
                 .map(strings -> {
                     if (strings.length >= 3) return new String[]{strings[0], strings[1], strings[2]};
